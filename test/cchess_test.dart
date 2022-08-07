@@ -10,8 +10,6 @@ void main() {
     stdout.writeln('${record.level.name}: ${record.time}: ${record.message}');
   });
 
-  /// 招法搜索测试
-
   /// 测试有没有将军的招法
   test('test checkMove', () {
     ChessRule rule = ChessRule.fromFen(
@@ -101,16 +99,6 @@ void main() {
     rule.fen.move('c2d2');
     expect(rule.rootCount(ChessPos.fromCode('d5'), 0), 3);
     expect(rule.rootCount(ChessPos.fromCode('d5'), 1), 2);
-  });
-
-  test('test Future', () async {
-    logger.info(DateTime.now().millisecondsSinceEpoch);
-    await Future.delayed(const Duration(seconds: 5));
-    logger.info(DateTime.now().millisecondsSinceEpoch);
-
-    Future.delayed(const Duration(seconds: 5)).then((value) {
-      logger.info(DateTime.now().millisecondsSinceEpoch);
-    });
   });
 
   /// 测试绝杀局面
