@@ -358,7 +358,6 @@ class ChessRule {
   /// TODO 获取杀招 ，连将，连将过程中局面不会复原，不会被解将
   List<String> getCheckMate(int team, [int depth = 10]) {
     List<String> moves = [];
-    List<String> fenHis = [];
 
     List<ChessItem> pieces = fen.getAll();
     ChessPos kPos = fen.find(team == 0 ? 'k' : 'K')!;
@@ -366,32 +365,41 @@ class ChessRule {
     // 正在将军，直接查出吃老将的招法
     int enemyTeam = team == 0 ? 1 : 0;
     if (isCheck(enemyTeam)) {
-      final item = pieces.firstWhere((item) {
+      for (final item in pieces) {
         if (item.team == team) {
           List<String> moves = movePoints(item.position, kPos);
           if (moves.contains(kPos.toCode())) {
             moves.add(item.position.toCode() + kPos.toCode());
-            return true;
+            return moves;
           }
         }
-        return false;
-      });
-
-      return moves;
+      }
     }
 
-    // todo
-    ChessFen currentFen = fen.copy();
-    List<int> mvIndex = [0];
+    final currentFen = fen.copy();
+    ChessFen startFen = currentFen;
+
     int curDepth = 0;
+
+    // 获取连将的杀着
     while (true) {
-      fenHis.add(currentFen.fen);
-      List<String> checkMoves = ChessRule(currentFen).getCheckMoves(team);
+      moves.add('');
+      final checkMoves = ChessRule(startFen).getCheckMoves(team);
       for (final move in checkMoves) {
-        break;
+        moves[curDepth] = move;
+        ChessFen fend = currentFen.copy();
+        fend.move(move);
+        if (!ChessRule(fend).canParryKill(team == 0 ? 1 : 0)) {
+          return moves;
+        }
+        currentFen.deductions.add(fend);
+        startFen = fend;
       }
 
-      mvIndex[curDepth]++;
+      curDepth++;
+      if (curDepth >= depth) {
+        break;
+      }
     }
 
     return moves;

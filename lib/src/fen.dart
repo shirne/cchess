@@ -61,6 +61,9 @@ class ChessFen {
   String _fen = '';
   late List<ChessFenRow> _rows;
 
+  /// 推演变化
+  final deductions = <ChessFen>[];
+
   ChessFen([String fenStr = initFen]) {
     if (fenStr.isEmpty) {
       fenStr = initFen;
