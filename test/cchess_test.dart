@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:cchess/cchess.dart';
 import 'package:logging/logging.dart';
+import 'package:test/test.dart';
 
 void main() {
   final logger = Logger.root;
