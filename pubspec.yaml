@@ -1,7 +1,7 @@
 name: cchess
 description: Chinese chess rule analysis, supported Chess-manual load, piece move, checkmate, move transfer.
 version: 0.0.1
-homepage:
+homepage: https://github.com/shirne/cchess
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
