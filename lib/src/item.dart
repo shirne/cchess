@@ -1,6 +1,7 @@
 import 'fen.dart';
 import 'pos.dart';
 
+/// A chess Item
 class ChessItem {
   final String _code;
   bool isDie = false;

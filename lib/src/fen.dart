@@ -3,6 +3,7 @@ import 'manual.dart';
 import 'item.dart';
 import 'pos.dart';
 
+/// A situation of the game
 class ChessFen {
   static const initFen =
       'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR';
@@ -71,6 +72,7 @@ class ChessFen {
     fen = fenStr;
   }
 
+  /// A row of the game situation
   ChessFenRow operator [](int key) {
     return _rows[key];
   }
@@ -80,11 +82,13 @@ class ChessFen {
     _fen = '';
   }
 
+  /// Set a row
   operator []=(int key, ChessFenRow value) {
     _rows[key] = value;
     _fen = '';
   }
 
+  /// Get the fenstr
   String get fen {
     if (_fen.isEmpty) {
       _fen = _rows.reversed.join('/').replaceAllMapped(
@@ -93,6 +97,7 @@ class ChessFen {
     return _fen;
   }
 
+  /// Set the fenstr
   set fen(String fenStr) {
     if (fenStr.contains(' ')) {
       fenStr = fenStr.split(' ')[0];
@@ -122,6 +127,7 @@ class ChessFen {
     return ChessFen(positionStr);
   }
 
+  /// Move then change the game situation
   bool move(String move) {
     int fromX = move.codeUnitAt(0) - colIndexBase;
     int fromY = int.parse(move[1]);
@@ -150,14 +156,17 @@ class ChessFen {
     return true;
   }
 
+  /// Get piece at the position
   String itemAtPos(ChessPos pos) {
     return _rows[pos.y][pos.x];
   }
 
+  /// Get piece at the position code
   String itemAt(String pos) {
     return itemAtPos(ChessPos.fromCode(pos));
   }
 
+  /// Whether there is a [team] piece at the position
   bool hasItemAt(ChessPos pos, {int team = -1}) {
     String item = _rows[pos.y][pos.x];
     if (item == '0') {
@@ -173,6 +182,7 @@ class ChessFen {
     return false;
   }
 
+  /// Find the piece's position
   ChessPos? find(String matchCode) {
     ChessPos? pos;
     int rowNumber = 0;
@@ -188,6 +198,7 @@ class ChessFen {
     return pos;
   }
 
+  /// Find all piece of a type
   List<ChessPos> findAll(String matchCode) {
     List<ChessPos> items = [];
     int rowNumber = 0;
@@ -202,6 +213,7 @@ class ChessFen {
     return items;
   }
 
+  /// Fine a piece in the [col]
   List<ChessItem> findByCol(int col, [int? min, int? max]) {
     List<ChessItem> items = [];
     for (int i = min ?? 0; i <= (max ?? _rows.length - 1); i++) {
@@ -212,6 +224,7 @@ class ChessFen {
     return items;
   }
 
+  /// Get all items of the situation
   List<ChessItem> getAll() {
     List<ChessItem> items = [];
     int rowNumber = 0;
@@ -230,6 +243,7 @@ class ChessFen {
     return items;
   }
 
+  /// Get all items out of the situation
   String getDieChr() {
     String fullChrs = initFen.replaceAll(RegExp(r'[1-9/]'), '');
     String currentChrs = getAllChr();
@@ -243,6 +257,7 @@ class ChessFen {
     return '';
   }
 
+  /// Get all piece chr
   String getAllChr() {
     return fen.split('/').reversed.join('/').replaceAll(RegExp(r'[1-9/]'), '');
   }
@@ -252,6 +267,7 @@ class ChessFen {
     return fen;
   }
 
+  /// Sort by pos
   int posSort(key1, key2) {
     if (key1.x > key2.x) {
       return -1;
@@ -266,6 +282,7 @@ class ChessFen {
     return 0;
   }
 
+  /// Translate move to position move
   String toPositionString(int team, String move) {
     late String code;
     late String matchCode;
@@ -381,6 +398,7 @@ class ChessFen {
     return '${curItem.toCode()}${nextItem.toCode()}';
   }
 
+  /// Translate result to chinese
   static getChineseResult(String result) {
     switch (result) {
       case '1-0':
@@ -393,6 +411,7 @@ class ChessFen {
     return '未知';
   }
 
+  /// Translate all moves to chinese move
   List<String> toChineseTree(List<String> moves) {
     ChessFen start = copy();
     List<String> results = [];
@@ -403,6 +422,7 @@ class ChessFen {
     return results;
   }
 
+  /// Translate a move to chinese move
   String toChineseString(String move) {
     if (ChessManual.results.contains(move)) {
       return getChineseResult(move);
@@ -517,6 +537,7 @@ class ChessFen {
   }
 }
 
+/// A row of the game situation
 class ChessFenRow {
   String fenRow;
 

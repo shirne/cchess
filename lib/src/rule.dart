@@ -2,7 +2,7 @@ import 'fen.dart';
 import 'item.dart';
 import 'pos.dart';
 
-/// 行棋规则
+/// 行棋规则 Rule of a game
 class ChessRule {
   // 棋子初始权重
   static const chessWeight = {

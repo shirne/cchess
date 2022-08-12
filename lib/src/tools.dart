@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:logging/logging.dart';
 
+/// logger
 final logger = Logger.root
   ..onRecord.listen((record) {
     log(

@@ -5,6 +5,7 @@ import 'pos.dart';
 import 'rule.dart';
 import 'step.dart';
 
+/// A Chess game with infos,moves and result
 class ChessManual {
   static const startFen = '${ChessFen.initFen} w - - 0 1';
   static const resultFstWin = '1-0';
@@ -139,6 +140,7 @@ class ChessManual {
     _items = [];
   }
 
+  /// Load manual from pgn content
   ChessManual.load(String content) {
     int idx = 0;
     String line = '';
@@ -268,6 +270,7 @@ class ChessManual {
     logger.info(moves);
   }
 
+  /// Export the game to pgn format String
   String export() {
     List<String> lines = [];
     lines.add('[Game "$game"]');
@@ -300,6 +303,7 @@ class ChessManual {
     return lines.join("\n");
   }
 
+  /// Navigate to a history
   loadHistory(int index) {
     if (index < 1) {
       currentFen.fen = fen.split(' ')[0];
@@ -312,6 +316,7 @@ class ChessManual {
     step = index;
   }
 
+  /// Set fen
   setFen(String fenStr) {
     ChessFen startFen = ChessFen(fen);
     String initChrs = startFen.getAllChr();
@@ -357,15 +362,18 @@ class ChessManual {
     return true;
   }
 
+  /// Do move. add the move to history and change the situation
   void doMove(String move) {
     currentFen.move(move);
     fenPosition.move(move);
   }
 
+  /// Whether is last of the history
   bool get hasNext {
     return step < moves.length;
   }
 
+  /// Navigate to next step
   String next() {
     if (step < moves.length) {
       step++;
@@ -379,6 +387,8 @@ class ChessManual {
   }
 
   List<ChessItem> _items = [];
+
+  /// Get all items of the game
   List<ChessItem> getChessItems() {
     ChessFen startFen = ChessFen(fen);
 
@@ -424,6 +434,7 @@ class ChessManual {
     return moves[step - 1];
   }
 
+  /// Clear moves after step [fromStep]
   void clearMove([int fromStep = 0]) {
     if (fromStep < 1) {
       moves.clear();
@@ -433,12 +444,14 @@ class ChessManual {
     logger.info('Clear moves $fromStep $moves');
   }
 
+  /// Add multi moves to history
   void addMoves(List<String> moves) {
     for (var move in moves) {
       addMove(move);
     }
   }
 
+  /// Add a move to history
   void addMove(String move, {String description = '', int addStep = -1}) {
     if (results.contains(move)) {
       result = move;
@@ -471,6 +484,7 @@ class ChessManual {
     }
   }
 
+  /// Get the repeat rounds
   int repeatRound() {
     int rewind = step - 1;
     int round = 0;
@@ -487,14 +501,17 @@ class ChessManual {
     return round;
   }
 
+  /// Is number move
   static isNumberMove(String move) {
     return RegExp(r'[abcrnkpABCRNKP][0-9a-e][+\-\.][0-9]').hasMatch(move);
   }
 
+  /// Is position move
   static isPosMove(String move) {
     return RegExp(r'[a-iA-I][0-9]-?[a-iA-I][0-9]').hasMatch(move);
   }
 
+  /// Is chinese move
   static isChineseMove(String move) {
     return !isNumberMove(move) && !isPosMove(move);
   }

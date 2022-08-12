@@ -1,3 +1,4 @@
+/// A position in game board
 class ChessPos {
   int x;
   int y;

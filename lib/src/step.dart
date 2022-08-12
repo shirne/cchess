@@ -1,6 +1,6 @@
 import 'fen.dart';
 
-/// 招法
+/// 招法 A step of the game
 class ChessStep {
   // 当前回合数
   final int round;
