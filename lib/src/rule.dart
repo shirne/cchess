@@ -2,9 +2,9 @@ import 'fen.dart';
 import 'item.dart';
 import 'pos.dart';
 
-/// 行棋规则 Rule of a game
+/// Rule validator 行棋规则
 class ChessRule {
-  // 棋子初始权重
+  /// 棋子初始权重
   static const chessWeight = {
     'k': 99,
     'r': 19,
@@ -15,13 +15,17 @@ class ChessRule {
     'p': 1
   };
 
+  /// current fenstr
   ChessFen fen;
 
+  /// constructor of a validator
   ChessRule(this.fen);
 
+  /// constructor of a validator
   ChessRule.fromFen([String fenStr = ChessFen.initFen])
       : fen = ChessFen(fenStr);
 
+  /// Weight of a chess (Experimental nature)
   int getChessWeight(ChessPos pos) {
     String chess = fen[pos.y][pos.x];
     if (chess == '0') return 0;
@@ -76,7 +80,7 @@ class ChessRule {
     return weight;
   }
 
-  /// 是否困毙
+  /// is trapped 是否困毙
   bool isTrapped(int team) {
     List<ChessItem> pieces = fen.getAll();
     return !pieces.any((item) {
@@ -98,7 +102,7 @@ class ChessRule {
     });
   }
 
-  /// 是否可以解杀 [调用前确保正在被将]
+  /// Can the deadlock be solved 是否可以解杀
   bool canParryKill(int team) {
     ChessPos? kPos = fen.find(team == 0 ? 'K' : 'k');
     if (kPos == null) {
@@ -128,7 +132,7 @@ class ChessRule {
     });
   }
 
-  /// 老将是否照面
+  /// is king meet 老将是否照面
   bool isKingMeet(int team) {
     ChessPos? kPos = fen.find(team == 0 ? 'K' : 'k');
     if (kPos == null) {
@@ -141,7 +145,10 @@ class ChessRule {
     if (enemyKing != null && kPos.x == enemyKing.x) {
       final isMax = enemyKing.y > kPos.y;
       List<ChessItem> items = fen.findByCol(
-          kPos.x, isMax ? kPos.y : enemyKing.y, isMax ? enemyKing.y : kPos.y);
+        kPos.x,
+        isMax ? kPos.y : enemyKing.y,
+        isMax ? enemyKing.y : kPos.y,
+      );
 
       // 原则上没有小于2的情况，这里统一按照面计算
       if (items.length <= 2) {
@@ -151,7 +158,7 @@ class ChessRule {
     return false;
   }
 
-  /// 检查方是否能将军
+  /// whether the team `team` can do checkmate 检查方是否能将军
   bool teamCanCheck(int team) {
     return fen
         .getAll()
@@ -170,12 +177,12 @@ class ChessRule {
     });
   }
 
-  /// 检查是否被将死
+  /// is checkmate and deadlock 检查是否被将死
   bool isCheckMate(int team) {
     return (isCheck(team) && !canParryKill(team)) || isTrapped(team);
   }
 
-  /// 检查是否被将军
+  /// is checkmate 检查是否被将军
   bool isCheck(int team) {
     ChessPos? kPos = fen.find(team == 0 ? 'K' : 'k');
     if (kPos == null) {
@@ -212,12 +219,14 @@ class ChessRule {
 
     List<ChessItem> items = cFen.getAll();
     return items
-        .where((item) =>
-            item.position != pos &&
-            item.team == team &&
-            ChessRule(cFen)
-                .movePoints(item.position, pos)
-                .contains(pos.toCode()))
+        .where(
+          (item) =>
+              item.position != pos &&
+              item.team == team &&
+              ChessRule(cFen)
+                  .movePoints(item.position, pos)
+                  .contains(pos.toCode()),
+        )
         .length;
   }
 
@@ -276,8 +285,10 @@ class ChessRule {
         }
       }
     }
-    items.sort((a, b) => chessWeight[b.code.toLowerCase()]!
-        .compareTo(chessWeight[a.code.toLowerCase()]!));
+    items.sort(
+      (a, b) => chessWeight[b.code.toLowerCase()]!
+          .compareTo(chessWeight[a.code.toLowerCase()]!),
+    );
     return items;
   }
 
@@ -292,8 +303,10 @@ class ChessRule {
         items.add(ChessItem(chr, position: toPos));
       }
     }
-    items.sort((a, b) => chessWeight[b.code.toLowerCase()]!
-        .compareTo(chessWeight[a.code.toLowerCase()]!));
+    items.sort(
+      (a, b) => chessWeight[b.code.toLowerCase()]!
+          .compareTo(chessWeight[a.code.toLowerCase()]!),
+    );
     return items;
   }
 
@@ -311,12 +324,14 @@ class ChessRule {
         }
       }
     }
-    items.sort((a, b) => chessWeight[b.code.toLowerCase()]!
-        .compareTo(chessWeight[a.code.toLowerCase()]!));
+    items.sort(
+      (a, b) => chessWeight[b.code.toLowerCase()]!
+          .compareTo(chessWeight[a.code.toLowerCase()]!),
+    );
     return items;
   }
 
-  /// todo 获取抽子招法 将军同时吃对方无根子
+  /// TODO 获取抽子招法 将军同时吃对方无根子
   /// 1.一个子将军，另一个子吃子，判断被吃子能否解将
   /// 2.躲将后是否有子被吃，被吃子能否解将
   List<String> getCheckEat(int team) {
@@ -413,26 +428,30 @@ class ChessRule {
     code = code.toLowerCase();
     switch (code) {
       case 'p':
-        return moveP(team, code, activePos, target);
+        return _moveP(team, code, activePos, target);
       case 'c':
-        return moveC(team, code, activePos, target);
+        return _moveC(team, code, activePos, target);
       case 'r':
-        return moveR(team, code, activePos, target);
+        return _moveR(team, code, activePos, target);
       case 'n':
-        return moveN(team, code, activePos, target);
+        return _moveN(team, code, activePos, target);
       case 'b':
-        return moveB(team, code, activePos, target);
+        return _moveB(team, code, activePos, target);
       case 'a':
-        return moveA(team, code, activePos, target);
+        return _moveA(team, code, activePos, target);
       case 'k':
-        return moveK(team, code, activePos, target);
+        return _moveK(team, code, activePos, target);
       default:
         return [];
     }
   }
 
-  List<String> moveP(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveP(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var m in [
@@ -479,8 +498,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveC(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveC(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var step in [
@@ -521,8 +544,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveR(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveR(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var step in [
@@ -555,8 +582,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveN(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveN(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var m in [
@@ -581,7 +612,8 @@ class ChessRule {
       }
       // 是否别马腿
       if (fen.hasItemAt(
-          ChessPos(activePos.x + m[0] ~/ 2, activePos.y + m[1] ~/ 2))) {
+        ChessPos(activePos.x + m[0] ~/ 2, activePos.y + m[1] ~/ 2),
+      )) {
         //print([newPoint, activePos.x + m[0] ~/ 2, activePos.y + m[1] ~/ 2]);
         continue;
       }
@@ -594,8 +626,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveB(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveB(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var m in [
@@ -622,7 +658,8 @@ class ChessRule {
       }
       // 是否别象腿
       if (fen.hasItemAt(
-          ChessPos(activePos.x + m[0] ~/ 2, activePos.y + m[1] ~/ 2))) {
+        ChessPos(activePos.x + m[0] ~/ 2, activePos.y + m[1] ~/ 2),
+      )) {
         continue;
       }
       // 目标位置是否有己方子
@@ -634,8 +671,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveA(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveA(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var m in [
@@ -669,8 +710,12 @@ class ChessRule {
     return points;
   }
 
-  List<String> moveK(int team, String code, ChessPos activePos,
-      [ChessPos? target]) {
+  List<String> _moveK(
+    int team,
+    String code,
+    ChessPos activePos, [
+    ChessPos? target,
+  ]) {
     List<String> points = [];
 
     for (var m in [

@@ -13,7 +13,8 @@ void main() {
   /// 测试有没有将军的招法
   test('test checkMove', () {
     ChessRule rule = ChessRule.fromFen(
-        'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1');
+      'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1',
+    );
     expect(rule.teamCanCheck(0), false);
 
     rule.fen.fen =
@@ -36,16 +37,19 @@ void main() {
     int startMillionSec = DateTime.now().millisecondsSinceEpoch;
     logger.info(startMillionSec);
     ChessRule rule = ChessRule.fromFen(
-        'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1');
+      'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1',
+    );
 
     List<ChessItem> beEatens = rule.getBeEatenList(0);
     for (var item in beEatens) {
       List<ChessItem> beEats = rule.getBeEatList(item.position);
       logger.info(
-          '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}');
+        '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}',
+      );
     }
     logger.info(
-        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+      '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+    );
     startMillionSec = DateTime.now().millisecondsSinceEpoch;
 
     rule.fen.fen =
@@ -54,10 +58,12 @@ void main() {
     for (var item in beEatens) {
       List<ChessItem> beEats = rule.getBeEatList(item.position);
       logger.info(
-          '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}');
+        '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}',
+      );
     }
     logger.info(
-        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+      '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+    );
     startMillionSec = DateTime.now().millisecondsSinceEpoch;
 
     rule.fen.fen =
@@ -66,10 +72,12 @@ void main() {
     for (var item in beEatens) {
       List<ChessItem> beEats = rule.getBeEatList(item.position);
       logger.info(
-          '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}');
+        '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}',
+      );
     }
     logger.info(
-        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+      '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+    );
     startMillionSec = DateTime.now().millisecondsSinceEpoch;
 
     rule.fen.fen =
@@ -78,17 +86,20 @@ void main() {
     for (var item in beEatens) {
       List<ChessItem> beEats = rule.getBeEatList(item.position);
       logger.info(
-          '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}');
+        '${item.code} <= ${beEats.map<String>((item) => item.code).join(',')}',
+      );
     }
     logger.info(
-        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+      '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+    );
     startMillionSec = DateTime.now().millisecondsSinceEpoch;
   });
 
   /// 测试根数检查
   test('test rootCount', () async {
     ChessRule rule = ChessRule.fromFen(
-        '4ka1r1/4a1R2/4b4/pN5Np/2pC5/6P2/P3P2rP/4B4/2ncA4/2BA1K3 w - - 0 1');
+      '4ka1r1/4a1R2/4b4/pN5Np/2pC5/6P2/P3P2rP/4B4/2ncA4/2BA1K3 w - - 0 1',
+    );
     expect(rule.rootCount(ChessPos.fromCode('g4'), 0), 3);
     expect(rule.rootCount(ChessPos.fromCode('g4'), 1), 0);
 
@@ -113,7 +124,8 @@ void main() {
 
     manual = ChessManual(fen: '4k4/4a4/2P5n/5N3/9/5R3/9/9/2p2p2r/C3K4');
     manual.addMoves(
-        ['f6d7', 'e9d9', 'a0d0', 'c1d1', 'f4f9', 'e8e9', 'd7f8', '1-0']);
+      ['f6d7', 'e9d9', 'a0d0', 'c1d1', 'f4f9', 'e8e9', 'd7f8', '1-0'],
+    );
 
     manual.loadHistory(0);
     expect(manual.currentFen.fen, manual.fen);
@@ -135,7 +147,8 @@ void main() {
         }
       }
       logger.info(
-          '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+      );
       startMillionSec = DateTime.now().millisecondsSinceEpoch;
     }
     // 步数走完后可返回结果
@@ -160,7 +173,8 @@ void main() {
   /// 是否将军
   test('test isCheck', () {
     ChessRule rule = ChessRule.fromFen(
-        'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR');
+      'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR',
+    );
     bool isCheck = rule.isCheck(0);
     bool canParryKill;
     expect(isCheck, false);
@@ -189,7 +203,8 @@ void main() {
     expect(isCheck, false);
     logger.info('判断当前局面未将军');
     logger.info(
-        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+      '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+    );
     startMillionSec = DateTime.now().millisecondsSinceEpoch;
 
     for (var step in [
@@ -213,7 +228,8 @@ void main() {
         rule.fen.move(step[1]);
       }
       logger.info(
-          '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒');
+        '耗时：${DateTime.now().millisecondsSinceEpoch - startMillionSec}毫秒',
+      );
       startMillionSec = DateTime.now().millisecondsSinceEpoch;
     }
   });

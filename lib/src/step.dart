@@ -1,34 +1,35 @@
 import 'fen.dart';
 
-/// 招法 A step of the game
+/// A move 招法
 class ChessStep {
-  // 当前回合数
+  /// 当前回合数
   final int round;
 
-  // 落着选手
+  /// 落着选手
   final int hand;
 
-  // 行子 仅作备用
+  /// 行子 仅作备用
   final String code;
 
-  // 着法
+  /// 着法
   final String move;
 
-  // 落着备注
+  /// 落着备注
   final String description;
 
-  // 该步行走前的状态
+  /// 该步行走前的状态
   final String fen;
 
-  // 该步行走前的力子位置图
+  /// 该步行走前的力子位置图
   final String fenPosition;
 
-  // 该步是否吃子
+  /// 该步是否吃子
   final bool isEat;
 
-  // 该步是否将军
+  /// 该步是否将军
   final bool isCheckMate;
 
+  /// constructor of a move
   ChessStep(
     this.hand,
     this.move, {
@@ -39,9 +40,9 @@ class ChessStep {
     this.isEat = false,
     this.isCheckMate = false,
     this.round = 0,
-  }) : code = code ?? getCode(fen, move);
+  }) : code = code ?? _getCode(fen, move);
 
-  static String getCode(String fen, String pos) {
+  static String _getCode(String fen, String pos) {
     List<String> rows = fen.split('/').reversed.toList();
     String row = rows[int.parse(pos[1])];
     row = row.replaceAllMapped(RegExp(r'\d'), (i) {
@@ -63,14 +64,12 @@ class ChessStep {
     return moveString;
   }
 
-  String _chineseString = '';
+  String? _chineseString;
+
+  /// translate this move to chinese
   String toChineseString() {
-    if (_chineseString.isNotEmpty) {
-      return _chineseString;
-    }
+    _chineseString ??= ChessFen(fen).toChineseString(move);
 
-    _chineseString = ChessFen(fen).toChineseString(move);
-
-    return _chineseString;
+    return _chineseString!;
   }
 }

@@ -1,6 +1,6 @@
 name: cchess
 description: Chinese chess rule analysis, supported Chess-manual load, piece move, checkmate, move translate.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/shirne/cchess
 
 environment:

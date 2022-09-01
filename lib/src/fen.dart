@@ -3,12 +3,19 @@ import 'manual.dart';
 import 'item.dart';
 import 'pos.dart';
 
-/// A situation of the game
+/// A snapshot of game
 class ChessFen {
+  /// Initialize chess layout
   static const initFen =
       'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR';
-  static final colIndexBase = 'a'.codeUnitAt(0);
 
+  /// Initialize chess layout
+  static const emptyFen = '4k4/9/9/9/9/9/9/9/9/4K4';
+
+  /// for col index
+  static const colIndexBase = 97; // 'a'
+
+  /// map chinese chess to code
   static const nameMap = {
     '将': 'k',
     '帅': 'K',
@@ -23,6 +30,8 @@ class ChessFen {
     '卒': 'p',
     '兵': 'P'
   };
+
+  /// map red code to chinese
   static const nameRedMap = {
     'k': '帅',
     'a': '仕',
@@ -32,6 +41,8 @@ class ChessFen {
     'c': '砲',
     'p': '兵',
   };
+
+  /// map black code to chinese
   static const nameBlackMap = {
     'k': '将',
     'a': '士',
@@ -41,7 +52,11 @@ class ChessFen {
     'c': '炮',
     'p': '卒',
   };
+
+  /// col name of red team
   static const colRed = ['九', '八', '七', '六', '五', '四', '三', '二', '一'];
+
+  /// chinese numbers
   static const replaceNumber = [
     '０',
     '１',
@@ -54,10 +69,14 @@ class ChessFen {
     '８',
     '９'
   ];
+
+  /// black codes
   static const colBlack = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  static const nameIndex = ['一', '二', '三', '四', '五'];
-  static const stepIndex = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-  static const posIndex = ['前', '中', '后'];
+
+  /// for chinese move
+  static const _nameIndex = ['一', '二', '三', '四', '五'];
+  static const _stepIndex = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  static const _posIndex = ['前', '中', '后'];
 
   String _fen = '';
   late List<ChessFenRow> _rows;
@@ -65,6 +84,7 @@ class ChessFen {
   /// 推演变化
   final deductions = <ChessFen>[];
 
+  /// Constructor by a fenstr
   ChessFen([String fenStr = initFen]) {
     if (fenStr.isEmpty) {
       fenStr = initFen;
@@ -72,39 +92,43 @@ class ChessFen {
     fen = fenStr;
   }
 
-  /// A row of the game situation
+  /// Get row
   ChessFenRow operator [](int key) {
     return _rows[key];
   }
 
-  /// 强制刷新 在使用 []设置单个位置时，本类里只能走读操作，不会清缓存
-  clearFen() {
+  /// force refresh fenstr(usually after batch of moves)
+  void clearFen() {
     _fen = '';
   }
 
-  /// Set a row
+  /// Set row
   operator []=(int key, ChessFenRow value) {
     _rows[key] = value;
     _fen = '';
   }
 
-  /// Get the fenstr
+  /// get current fenstr
   String get fen {
     if (_fen.isEmpty) {
       _fen = _rows.reversed.join('/').replaceAllMapped(
-          RegExp(r'0+'), (match) => match[0]!.length.toString());
+            RegExp(r'0+'),
+            (match) => match[0]!.length.toString(),
+          );
     }
     return _fen;
   }
 
-  /// Set the fenstr
+  /// Set a fen str TODO:Improve
   set fen(String fenStr) {
     if (fenStr.contains(' ')) {
       fenStr = fenStr.split(' ')[0];
     }
     _rows = fenStr
-        .replaceAllMapped(RegExp(r'\d'),
-            (match) => List<String>.filled(int.parse(match[0]!), '0').join(''))
+        .replaceAllMapped(
+          RegExp(r'\d'),
+          (match) => List<String>.filled(int.parse(match[0]!), '0').join(''),
+        )
         .split('/')
         .reversed
         .map<ChessFenRow>((row) => ChessFenRow(row))
@@ -112,17 +136,17 @@ class ChessFen {
     _fen = fenStr;
   }
 
-  /// 当前局面的副本
-  ChessFen copy() {
-    return ChessFen(fen);
-  }
+  /// A copy of current situation
+  ChessFen copy() => ChessFen(fen);
 
   /// 创建当前局面下的子力位置
   ChessFen position() {
     int chr = 65;
     String fenStr = fen;
     String positionStr = fenStr.replaceAllMapped(
-        RegExp(r'[^0-9\\/]'), (match) => String.fromCharCode(chr++));
+      RegExp(r'[^0-9\\/]'),
+      (match) => String.fromCharCode(chr++),
+    );
     // print(positionStr);
     return ChessFen(positionStr);
   }
@@ -156,17 +180,13 @@ class ChessFen {
     return true;
   }
 
-  /// Get piece at the position
-  String itemAtPos(ChessPos pos) {
-    return _rows[pos.y][pos.x];
-  }
+  /// Get item from a [ChessPos]
+  String itemAtPos(ChessPos pos) => _rows[pos.y][pos.x];
 
-  /// Get piece at the position code
-  String itemAt(String pos) {
-    return itemAtPos(ChessPos.fromCode(pos));
-  }
+  /// Get piece at the string position code
+  String itemAt(String pos) => itemAtPos(ChessPos.fromCode(pos));
 
-  /// Whether there is a [team] piece at the position
+  /// Whether there is a valid item at pos
   bool hasItemAt(ChessPos pos, {int team = -1}) {
     String item = _rows[pos.y][pos.x];
     if (item == '0') {
@@ -182,7 +202,7 @@ class ChessFen {
     return false;
   }
 
-  /// Find the piece's position
+  /// Find a chess by a type code
   ChessPos? find(String matchCode) {
     ChessPos? pos;
     int rowNumber = 0;
@@ -198,7 +218,7 @@ class ChessFen {
     return pos;
   }
 
-  /// Find all piece of a type
+  /// Find all chess of a type code
   List<ChessPos> findAll(String matchCode) {
     List<ChessPos> items = [];
     int rowNumber = 0;
@@ -213,7 +233,7 @@ class ChessFen {
     return items;
   }
 
-  /// Fine a piece in the [col]
+  /// Find item in a col
   List<ChessItem> findByCol(int col, [int? min, int? max]) {
     List<ChessItem> items = [];
     for (int i = min ?? 0; i <= (max ?? _rows.length - 1); i++) {
@@ -224,13 +244,13 @@ class ChessFen {
     return items;
   }
 
-  /// Get all items of the situation
+  /// Get all valid items of this situation
   List<ChessItem> getAll() {
     List<ChessItem> items = [];
     int rowNumber = 0;
     for (var row in _rows) {
       int start = 0;
-      while (start < row.fenRow.length) {
+      while (start < row._fenRow.length) {
         if (row[start] != '0') {
           items
               .add(ChessItem(row[start], position: ChessPos(start, rowNumber)));
@@ -243,7 +263,7 @@ class ChessFen {
     return items;
   }
 
-  /// Get all items out of the situation
+  /// Get item is dead
   String getDieChr() {
     String fullChrs = initFen.replaceAll(RegExp(r'[1-9/]'), '');
     String currentChrs = getAllChr();
@@ -257,18 +277,16 @@ class ChessFen {
     return '';
   }
 
-  /// Get all piece chr
+  /// Get all valid item code
   String getAllChr() {
     return fen.split('/').reversed.join('/').replaceAll(RegExp(r'[1-9/]'), '');
   }
 
   @override
-  String toString() {
-    return fen;
-  }
+  String toString() => fen;
 
-  /// Sort by pos
-  int posSort(key1, key2) {
+  /// Sort pos
+  int posSort(ChessPos key1, ChessPos key2) {
     if (key1.x > key2.x) {
       return -1;
     } else if (key1.x < key2.x) {
@@ -282,13 +300,13 @@ class ChessFen {
     return 0;
   }
 
-  /// Translate move to position move
+  /// Translate a move to positional representation
   String toPositionString(int team, String move) {
     late String code;
     late String matchCode;
     int colIndex = -1;
 
-    if (nameIndex.contains(move[0]) || posIndex.contains(move[0])) {
+    if (_nameIndex.contains(move[0]) || _posIndex.contains(move[0])) {
       code = nameMap[move[1]]!;
     } else {
       code = nameMap[move[0]]!;
@@ -302,26 +320,28 @@ class ChessFen {
 
     ChessPos curItem;
     // 这种情况只能是小兵
-    if (nameIndex.contains(move[0])) {
+    if (_nameIndex.contains(move[0])) {
       // 筛选出有同列的兵
       List<ChessPos> nItems = items
           .where(
-              (item) => items.any((pawn) => pawn != item && pawn.x == item.x))
+            (item) => items.any((pawn) => pawn != item && pawn.x == item.x),
+          )
           .toList();
       nItems.sort(posSort);
-      colIndex = nameIndex.indexOf(move[0]);
+      colIndex = _nameIndex.indexOf(move[0]);
       curItem =
           team == 0 ? nItems[nItems.length - colIndex - 1] : nItems[colIndex];
       // 前中后
-    } else if (posIndex.contains(move[0])) {
+    } else if (_posIndex.contains(move[0])) {
       // 筛选出有同列的兵
       List<ChessPos> nItems = items
           .where(
-              (item) => items.any((pawn) => pawn != item && pawn.x == item.x))
+            (item) => items.any((pawn) => pawn != item && pawn.x == item.x),
+          )
           .toList();
       nItems.sort(posSort);
       if (nItems.length > 2) {
-        colIndex = posIndex.indexOf(move[0]);
+        colIndex = _posIndex.indexOf(move[0]);
         curItem =
             team == 0 ? nItems[nItems.length - colIndex - 1] : nItems[colIndex];
       } else {
@@ -363,11 +383,11 @@ class ChessFen {
           (team == 1 && move[2] == '退')) {
         nextItem.x = curItem.x;
         nextItem.y = curItem.y +
-            (team == 0 ? stepIndex.indexOf(move[3]) : int.parse(move[3]));
+            (team == 0 ? _stepIndex.indexOf(move[3]) : int.parse(move[3]));
       } else {
         nextItem.x = curItem.x;
         nextItem.y = curItem.y -
-            (team == 0 ? stepIndex.indexOf(move[3]) : int.parse(move[3]));
+            (team == 0 ? _stepIndex.indexOf(move[3]) : int.parse(move[3]));
       }
     } else {
       nextItem.x =
@@ -398,8 +418,8 @@ class ChessFen {
     return '${curItem.toCode()}${nextItem.toCode()}';
   }
 
-  /// Translate result to chinese
-  static getChineseResult(String result) {
+  /// Result of chinese
+  static String getChineseResult(String result) {
     switch (result) {
       case '1-0':
         return '先胜';
@@ -411,7 +431,7 @@ class ChessFen {
     return '未知';
   }
 
-  /// Translate all moves to chinese move
+  /// A list of moves to chinese
   List<String> toChineseTree(List<String> moves) {
     ChessFen start = copy();
     List<String> results = [];
@@ -422,7 +442,7 @@ class ChessFen {
     return results;
   }
 
-  /// Translate a move to chinese move
+  /// Translate a move to chinese
   String toChineseString(String move) {
     if (ChessManual.results.contains(move)) {
       return getChineseResult(move);
@@ -466,9 +486,9 @@ class ChessFen {
         int idx = rowIndexs.indexOf(posFrom.y);
         // print([colCount, idx]);
         if (team == 0) {
-          chineseString = nameIndex[idx] + name;
+          chineseString = _nameIndex[idx] + name;
         } else {
-          chineseString = nameIndex[rowIndexs.length - idx - 1] + name;
+          chineseString = _nameIndex[rowIndexs.length - idx - 1] + name;
         }
       } else if (colCount > 2 || (colCount > 1 && code == 'p')) {
         // 找出所有的兵
@@ -476,8 +496,9 @@ class ChessFen {
 
         // 筛选出有同列的兵
         List<ChessPos> nPawns = pawns
-            .where((item) =>
-                pawns.any((pawn) => (pawn != item && pawn.x == item.x)))
+            .where(
+              (item) => pawns.any((pawn) => (pawn != item && pawn.x == item.x)),
+            )
             .toList();
         nPawns.sort(posSort);
 
@@ -500,9 +521,9 @@ class ChessFen {
           }
         } else {
           if (team == 0) {
-            chineseString = nameIndex[idx] + name;
+            chineseString = _nameIndex[idx] + name;
           } else {
-            chineseString = nameIndex[nPawns.length - idx - 1] + name;
+            chineseString = _nameIndex[nPawns.length - idx - 1] + name;
           }
         }
       } else if (colCount > 1) {
@@ -527,7 +548,7 @@ class ChessFen {
       }
       if (['p', 'k', 'c', 'r'].contains(code)) {
         int step = (posFrom.y - posTo.y).abs();
-        chineseString += team == 0 ? stepIndex[step] : step.toString();
+        chineseString += team == 0 ? _stepIndex[step] : step.toString();
       } else {
         chineseString += team == 0 ? colRed[posTo.x] : colBlack[posTo.x];
       }
@@ -537,26 +558,28 @@ class ChessFen {
   }
 }
 
-/// A row of the game situation
+/// A row of game board
 class ChessFenRow {
-  String fenRow;
+  String _fenRow;
 
-  ChessFenRow(this.fenRow);
+  /// constructor by a row string
+  ChessFenRow(this._fenRow);
 
+  /// get code at key position
   String operator [](int key) {
-    return fenRow[key];
+    return _fenRow[key];
   }
 
+  /// set code at key position
   operator []=(int key, String value) {
-    fenRow = fenRow.replaceRange(key, key + 1, value);
+    _fenRow = _fenRow.replaceRange(key, key + 1, value);
   }
 
+  /// find code index of this row
   int indexOf(String matchCode, [int start = 0]) {
-    return fenRow.indexOf(matchCode, start);
+    return _fenRow.indexOf(matchCode, start);
   }
 
   @override
-  String toString() {
-    return fenRow;
-  }
+  String toString() => _fenRow;
 }

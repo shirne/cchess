@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:logging/logging.dart';
 
-/// logger
+/// package log
 final logger = Logger.root
   ..onRecord.listen((record) {
     log(
@@ -14,3 +14,21 @@ final logger = Logger.root
       sequenceNumber: record.sequenceNumber,
     );
   });
+
+/// control package
+class CChess {
+  /// close log of cchess package
+  static void closeLog() {
+    logger.level = Level.OFF;
+  }
+
+  /// default to log info level
+  static void openLog() {
+    logger.level = Level.INFO;
+  }
+
+  /// set log level of cchess package
+  static set logLevel(Level level) {
+    logger.level = level;
+  }
+}
