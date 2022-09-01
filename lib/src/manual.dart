@@ -107,10 +107,25 @@ class ChessManual {
 
   /// 着法
   final _moves = <ChessStep>[];
-  int _step = 0;
+  int _step = -1;
 
-  ChessPos? _diePosition;
-  Map<String, ChessPos>? _diePositions;
+  /// 获取所有招法记录
+  List<ChessStep> get moves => _moves;
+
+  /// 是否最后一步
+  bool get isLast => _step == _moves.length - 1;
+
+  /// Current step index
+  int get currentStep => _step + 1;
+
+  /// Move counts
+  int get moveCount => _moves.length;
+
+  /// The current move
+  ChessStep? get currentMove => _moves.isEmpty ? null : _moves[_step];
+
+  /// The last move
+  ChessStep? get lastMove => _moves.isEmpty ? null : _moves.last;
 
   /// constructor of a chess game
   ChessManual({
@@ -394,9 +409,7 @@ class ChessManual {
   }
 
   /// if not at end
-  bool get hasNext {
-    return _step < _moves.length;
-  }
+  bool get hasNext => _step < _moves.length;
 
   /// go to next step
   String next() {
@@ -438,12 +451,6 @@ class ChessManual {
         item.position = fenPosition.find(chr)!;
         item.isDie = false;
       } else {
-        // print('${item.code}@${item.position.toCode()}: $chr @ $index --');
-        if (_diePositions != null && _diePositions!.containsKey(item.code)) {
-          item.position = _diePositions![item.code]!.copy();
-        } else if (_diePosition != null) {
-          item.position = _diePosition!.copy();
-        }
         item.isDie = true;
       }
       index++;
