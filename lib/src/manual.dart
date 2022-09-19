@@ -122,7 +122,8 @@ class ChessManual {
   int get moveCount => _moves.length;
 
   /// The current move
-  ChessStep? get currentMove => _moves.isEmpty ? null : _moves[_step];
+  ChessStep? get currentMove =>
+      (_moves.isEmpty || _step < 0) ? null : _moves[_step];
 
   /// The last move
   ChessStep? get lastMove => _moves.isEmpty ? null : _moves.last;
