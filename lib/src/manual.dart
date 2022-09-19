@@ -514,7 +514,7 @@ class ChessManual {
         ),
       );
 
-      _step = _moves.length;
+      _step = _moves.length - 1;
     }
   }
 
