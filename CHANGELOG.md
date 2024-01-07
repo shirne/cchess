@@ -1,3 +1,6 @@
+## 0.0.5
+* fix initFen
+
 ## 0.0.4
 * Add manual fields
 * Remove die position set(that should be set from UI)

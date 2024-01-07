@@ -164,6 +164,7 @@ class ChessManual {
 
   /// 初始化棋局
   void initFen(String fenStr) {
+    fen = fenStr;
     List<String> fenParts = fenStr.split(' ');
     currentFen = ChessFen(fenParts[0]);
     fenPosition = currentFen.position();
