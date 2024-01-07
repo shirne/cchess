@@ -27,7 +27,7 @@ class ChessManual {
     resultFstWin,
     resultFstLoose,
     resultFstDraw,
-    resultUnknown
+    resultUnknown,
   ];
 
   /// 游戏类型

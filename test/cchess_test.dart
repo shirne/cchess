@@ -211,7 +211,7 @@ void main() {
       ['f6d7', 'e9d9'],
       ['a0d0', 'c1d1'],
       ['f4f9', 'e8e9'],
-      ['d7f8', '1-0']
+      ['d7f8', '1-0'],
     ]) {
       logger.info(rule.fen.toChineseString(step[0]));
       rule.fen.move(step[0]);
@@ -259,7 +259,7 @@ void main() {
       'f4f9',
       'e8e9',
       'd7f8',
-      '1-0'
+      '1-0',
     ];
     logger.info(steps.take(1));
     steps.removeRange(1, steps.length);

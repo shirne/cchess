@@ -12,7 +12,7 @@ class ChessRule {
     'c': 8,
     'a': 2,
     'b': 2,
-    'p': 1
+    'p': 1,
   };
 
   /// current fenstr
@@ -458,7 +458,7 @@ class ChessRule {
       [1, 0],
       [0, 1],
       [-1, 0],
-      [0, -1]
+      [0, -1],
     ]) {
       if (team == 0) {
         // 不允许退
@@ -510,7 +510,7 @@ class ChessRule {
       [-1, 0],
       [1, 0],
       [0, -1],
-      [0, 1]
+      [0, 1],
     ]) {
       bool hasRack = false;
       ChessPos movePoint =
@@ -556,7 +556,7 @@ class ChessRule {
       [-1, 0],
       [1, 0],
       [0, -1],
-      [0, 1]
+      [0, 1],
     ]) {
       ChessPos movePoint =
           ChessPos(activePos.x + step[0], activePos.y + step[1]);
@@ -598,7 +598,7 @@ class ChessRule {
       [-2, 1],
       [-1, 2],
       [2, -1],
-      [1, -2]
+      [1, -2],
     ]) {
       ChessPos newPoint = ChessPos(activePos.x + m[0], activePos.y + m[1]);
       if (target != null && newPoint != target) {
@@ -638,7 +638,7 @@ class ChessRule {
       [2, 2],
       [-2, 2],
       [-2, -2],
-      [2, -2]
+      [2, -2],
     ]) {
       ChessPos newPoint = ChessPos(activePos.x + m[0], activePos.y + m[1]);
       if (target != null && newPoint != target) {
@@ -683,7 +683,7 @@ class ChessRule {
       [1, 1],
       [-1, 1],
       [-1, -1],
-      [1, -1]
+      [1, -1],
     ]) {
       ChessPos newPoint = ChessPos(activePos.x + m[0], activePos.y + m[1]);
       if (target != null && newPoint != target) {
@@ -722,7 +722,7 @@ class ChessRule {
       [1, 0],
       [0, 1],
       [-1, 0],
-      [0, -1]
+      [0, -1],
     ]) {
       ChessPos newPoint = ChessPos(activePos.x + m[0], activePos.y + m[1]);
       if (target != null && newPoint != target) {

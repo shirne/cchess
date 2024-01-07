@@ -28,7 +28,7 @@ class ChessFen {
     '炮': 'c',
     '砲': 'C',
     '卒': 'p',
-    '兵': 'P'
+    '兵': 'P',
   };
 
   /// map red code to chinese
@@ -67,7 +67,7 @@ class ChessFen {
     '６',
     '７',
     '８',
-    '９'
+    '９',
   ];
 
   /// black codes
