@@ -1,3 +1,6 @@
+## 0.0.7
+* fix duplicate logger listener
+
 ## 0.0.6
 * improve logger
 
