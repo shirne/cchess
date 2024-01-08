@@ -2,9 +2,15 @@ import 'dart:developer';
 
 import 'package:logging/logging.dart';
 
+/// override logger level
+Level loggerLevel = Level.ALL;
+
 /// package log
 final logger = Logger('CCHESS')
   ..onRecord.listen((record) {
+    if (loggerLevel.value > record.level.value) {
+      return;
+    }
     log(
       record.message,
       time: record.time,
@@ -19,16 +25,16 @@ final logger = Logger('CCHESS')
 class CChess {
   /// close log of cchess package
   static void closeLog() {
-    logger.level = Level.OFF;
+    loggerLevel = Level.OFF;
   }
 
   /// default to log info level
   static void openLog() {
-    logger.level = Level.INFO;
+    loggerLevel = Level.INFO;
   }
 
   /// set log level of cchess package
   static set logLevel(Level level) {
-    logger.level = level;
+    loggerLevel = level;
   }
 }

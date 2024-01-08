@@ -189,6 +189,7 @@ class ChessManual {
       (match) => ChessFen.replaceNumber.indexOf(match[0]!).toString(),
     );
     bool isInit = false;
+    bool isEnd = false;
     logger.info(content);
     while (true) {
       String chr = content[idx];
@@ -287,7 +288,8 @@ class ChessManual {
           break;
         // 这几个当作结尾注释吧
         case '=':
-          return;
+          isEnd = true;
+          break;
         default:
           line += chr;
           if (!isInit) {
@@ -298,6 +300,7 @@ class ChessManual {
             initFen(fen);
           }
       }
+      if (isEnd) break;
 
       idx++;
       if (idx >= content.length) {
