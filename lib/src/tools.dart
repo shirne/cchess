@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:logging/logging.dart';
 
 /// package log
-final logger = Logger.root
+final logger = Logger('CCHESS')
   ..onRecord.listen((record) {
     log(
       record.message,
