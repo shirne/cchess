@@ -147,7 +147,7 @@ class ChessManual {
 
   /// 默认开局资料
   void initDefault() {
-    fen = startFen;
+    initFen(startFen);
     red = 'Red';
     black = 'Black';
     redTeam = 'RedTeam';
